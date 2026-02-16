@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 import WebpackErrorReporterPlugin from "./webpack/plugins/WebpackErrorReporterPlugin";
 
 const nextConfig: NextConfig = {
@@ -56,9 +57,12 @@ const nextConfig: NextConfig = {
       );
       console.log("WebpackErrorReporterPlugin registered for dev mode.");
     } else {
+      // Use a cache directory within the app directory for Docker compatibility
       config.cache = {
         type: "filesystem",
-        cacheDirectory: "/home/user/.next-cache-build",
+        cacheDirectory:
+          process.env.WEBPACK_CACHE_DIR ||
+          path.resolve(process.cwd(), ".next-cache-build"),
       };
     }
     // Handle missing modules gracefully
